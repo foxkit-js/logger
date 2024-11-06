@@ -1,10 +1,13 @@
 {
-  "name": "library-template",
+  "name": "@foxkit/logger",
   "version": "0.0.0",
-  "description": "",
+  "description": "Highly customizable logger with TypeScript support",
   "keywords": [],
-  "author": "YOUR_NAME_HERE",
-  "repository": "foxkit-js/library-template",
+  "author": "Mitsunee",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxkit-js/logger.git"
+  },
   "license": "MIT",
   "private": true,
   "type": "module",
