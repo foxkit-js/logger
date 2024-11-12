@@ -46,7 +46,7 @@ export class LogLevel {
     this.#color = color;
   }
 
-  #processTemplateVar(str: string, now: Date) {
+  #processTemplateVar(str: string /* , now: Date*/) {
     switch (str) {
       case "%name%":
         return this.#name.toLowerCase();
@@ -83,12 +83,12 @@ export class LogLevel {
   }
 
   #processPrefix(template: string, isFileLog?: boolean) {
-    const now = new Date();
+    //const now = new Date();
     return template
       .replace(/%#?(?:name|Name|NAME)#?%/g, str =>
         this.#processNameVar(str, isFileLog)
       )
-      .replace(/%[a-z]+%/gi, str => this.#processTemplateVar(str, now));
+      .replace(/%[a-z]+%/gi, str => this.#processTemplateVar(str /*, now*/));
   }
 
   processTemplate(msg: string, isFileLog?: boolean) {
