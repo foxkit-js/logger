@@ -73,11 +73,22 @@ test("processTemplate - Does not transform unknown variables", () => {
 test("processTemplate - Dates", () => {
   const level = new LogLevel({
     name: "test",
-    msgTemplate: { template: "[%iso% %time%] %name% -", utc: true }
+    msgTemplate: "[%month_str% %date_ord% %hour%:%#min%] [%NAME%]:",
+    fileMsgTemplate: {
+      template: "[%iso% %time%] %name% -",
+      utc: true
+    }
   });
+
   assert.ok(
-    /^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}] test -/.test(
+    /^\[[A-Z][a-z]{2} \d{1,2}(st|rd|th|nd) \d{1,2}:\d{2}\] \[TEST\]:/.test(
       level.processTemplate("foo")
+    ),
+    "test template with string month and ordinal date"
+  );
+  assert.ok(
+    /^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] test -/.test(
+      level.processTemplate("foo", true)
     ),
     "test template with %iso% and %time% using regex"
   );
