@@ -33,11 +33,11 @@ interface LogLevelOpts {
   /**
    * Template for console logging
    */
-  msgTemplate: string;
+  msgTemplate: string | MessageTemplate;
   /**
    * Template for file logging
    */
-  fileMsgTemplate?: string;
+  fileMsgTemplate?: string | MessageTemplate;
   /**
    * Pad Length for padded name template variable
    */
