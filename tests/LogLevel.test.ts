@@ -70,6 +70,19 @@ test("processTemplate - Does not transform unknown variables", () => {
   assert.is(level.processTemplate("foo"), "%wrong% test: foo");
 });
 
+test("processTemplate - Dates", () => {
+  const level = new LogLevel({
+    name: "test",
+    msgTemplate: { template: "[%iso% %time%] %name% -", utc: true }
+  });
+  assert.ok(
+    /^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}] test -/.test(
+      level.processTemplate("foo")
+    ),
+    "test template with %iso% and %time% using regex"
+  );
+});
+
 test("processTemplate - name colour", () => {
   const level = new LogLevel({
     name: "test",
