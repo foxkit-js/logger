@@ -8,7 +8,7 @@ interface MessageTemplate {
   utc?: boolean;
 }
 
-interface LogLevelOpts {
+export interface LogLevelOpts {
   /**
    * Name of the log level
    */

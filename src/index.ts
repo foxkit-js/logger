@@ -1,9 +1,9 @@
 /* eslint-disable */
 
-interface LogLevel {
-  level: number;
-}
+import type { LogLevelOpts } from "./LogLevel";
 
-function createLogger<TKey extends string>(levels: Record<TKey, LogLevel>) {
-  return {} as Record<TKey, () => void>;
+function createLogger<TKey extends string>(
+  levels: Array<LogLevelOpts & { name: TKey }>
+) {
+  return {} as Record<Lowercase<TKey>, () => void>;
 }
