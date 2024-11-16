@@ -95,7 +95,5 @@ export function formatTime(template: string, utc: boolean, time: Date) {
     }
   }
 
-  const res = template.replace(/%#?[a-z_]+%/gi, str => fmt(str));
-  console.log({ time, template, res });
-  return res;
+  return template.replace(/%#?[a-z_]+%/gi, str => fmt(str));
 }
