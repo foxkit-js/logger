@@ -18,10 +18,6 @@ export interface LogLevelOpts {
    */
   msgTemplate: string | MessageTemplate;
   /**
-   * Template for file logging
-   */
-  fileMsgTemplate?: string | MessageTemplate;
-  /**
    * Pad Length for padded name template variable
    */
   padLen?: number;
@@ -31,21 +27,13 @@ export interface LogLevelOpts {
   color?: ColorFormatter;
 }
 
-function toTemplateObjs(
-  msgVal: string | MessageTemplate,
-  fileMsgVal?: string | MessageTemplate
-) {
+function toTemplateObjs(msgVal: string | MessageTemplate) {
   const msgTemplate: MessageTemplate =
     typeof msgVal == "string"
       ? { template: msgVal, utc: false }
       : { ...msgVal };
 
-  const fileMsgTemplate: MessageTemplate = fileMsgVal
-    ? typeof fileMsgVal == "string"
-      ? { template: fileMsgVal, utc: false }
-      : { ...fileMsgVal }
-    : msgTemplate;
-  return { msg: msgTemplate, file: fileMsgTemplate };
+  return { msg: msgTemplate };
 }
 
 export class LogLevel {
@@ -54,20 +42,14 @@ export class LogLevel {
   #padLen: number;
   #color?: ColorFormatter;
 
-  constructor({
-    name,
-    msgTemplate,
-    fileMsgTemplate,
-    padLen,
-    color
-  }: LogLevelOpts) {
+  constructor({ name, msgTemplate, padLen, color }: LogLevelOpts) {
     this.#name = name;
-    this.#templates = toTemplateObjs(msgTemplate, fileMsgTemplate);
+    this.#templates = toTemplateObjs(msgTemplate);
     this.#padLen = padLen || 0;
     this.#color = color;
   }
 
-  #processNameVar(str: string, isFileLog?: boolean) {
+  #processNameVar(str: string) {
     let direction: null | "left" | "center" | "right" = null;
     const tag = str.replace(/%|#/g, "");
     let val = this.#name;
@@ -86,24 +68,24 @@ export class LogLevel {
         break;
     }
 
-    if (this.#color && !isFileLog) val = this.#color(val);
+    if (this.#color) val = this.#color(val);
 
     return direction ? padStr(val, this.#padLen, direction) : val;
   }
 
-  #processPrefix({ template, utc }: MessageTemplate, isFileLog?: boolean) {
+  #processPrefix({ template, utc }: MessageTemplate) {
     return formatTime(
       template.replace(/%#?(?:name|Name|NAME)#?%/g, str =>
-        this.#processNameVar(str, isFileLog)
+        this.#processNameVar(str)
       ),
       utc ?? false,
       new Date()
     );
   }
 
-  processTemplate(msg: string, isFileLog?: boolean) {
-    const template = this.#templates[isFileLog ? "file" : "msg"];
-    const prefix = this.#processPrefix(template, isFileLog);
+  processTemplate(msg: string) {
+    const template = this.#templates.msg;
+    const prefix = this.#processPrefix(template);
     return `${prefix} ${msg}`;
   }
 }
