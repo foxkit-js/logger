@@ -17,4 +17,13 @@ test("padding centered", () => {
   is(padStr("foo", 6, "center", "right"), "  foo ", "test with right bias");
 });
 
+test("padding skipped", () => {
+  is(padStr("foo", 3, "left"), "foo", "test with length = string length");
+  is(
+    padStr("foobar", 3, "left"),
+    "foobar",
+    "test with length smaller than string length"
+  );
+});
+
 test.run();
