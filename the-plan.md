@@ -29,6 +29,15 @@ aka prevented pre-release feature creep :)
   - uses configurable level (such as `"error"` or `"fatal"`) to log caught errors
   - returns Promise, so `then(() => log.debug("Completed"))` could be chained for example :)
 
+## Misc notes
+
+- Any objects passed should either be recreated or frozen to prevent changes
+  - opts for `node:util.inspect` should likely just be sealed/frozen?
+- need a custom util for merging opts and a default, see: https://ieji.de/@mitsunee/113499661365435282
+  - TL;DR: there's a funny behaviour with spread where `undefined` set as a value replaces "legitimate" values, which TS ignores.
+  - Not an issue if the user has "exactOptionalPropertyTypes" set to `true`, but this is not the default
+    - may enable this in configs in the lib template?
+
 ## API
 
 ### Formatter system
@@ -111,14 +120,28 @@ Contains log method for each level
 type LogFn = (arg: any) => void;
 ```
 
+- unsure if this should accept only one value or infinite?
+  - may also allow giving overrides for `node:util.inspect`, tho this will block the infinity args options
+  - support formatting like native `console.log` does?
 - All logs start with prefix as per template
+  - uses default template as base, replaces values from override as provided
+- if output contains at least one instance of `"\n"` add newline after prefix, space character otherwise
 - Strings are simply printed
 - other Primitives objects are handled with `node:util.inspect`
   - that also adds color to numbers, bools etc if color is enabled
+  - uses settings as per `LoggerOpts`
 
 ## TODO:
 
 - do I need more settings utils yet?
-  - I mean there will be some for file logging probably
-- how does logging work
-- env var overrides?
+  - future features will add some, so `Logger.logger` existing is fine
+- env var overrides for settings?
+  - definitely want a way to override `defaultLevel`, probably not `errorLevel` tho
+- how should the `errorLevel` setting be used? Is it even needed?
+  - technically could just declare one internally with the defaultTemplate?
+- should log levels have an output stream option (i.e. stdout, stderr, custom stream)?
+  - what type are streams even
+- how to handle currently set log level?
+  - basic idea is that any level below the current one is ignored silently
+  - i.e. for `["log", "warn", "error"]` with currentLevel `"warn"` any `"log"` level log will be ignored
+- write a README
