@@ -32,7 +32,7 @@ aka prevented pre-release feature creep :)
 ## Misc notes
 
 - Any objects passed should either be recreated or frozen to prevent changes
-  - opts for `node:util.inspect` should likely just be sealed/frozen?
+  - opts for `node:util.inspect` should likely just be sealed/frozen?❓
 - need a custom util for merging opts and a default, see: https://ieji.de/@mitsunee/113499661365435282
   - TL;DR: there's a funny behaviour with spread where `undefined` set as a value replaces "legitimate" values, which TS ignores.
   - Not an issue if the user has "exactOptionalPropertyTypes" set to `true`, but this is not the default
@@ -78,7 +78,7 @@ type ResolvedTemplateOpts = Required<TemplateOpts>;
 
 ### Logger
 
-- main interface to create a new logger, possibly singletonfactory?
+- main interface to create a new logger, possibly singletonfactory?❓
 - Definitely want this to be synchronous to better support cjs.
 
 ```ts
@@ -86,12 +86,12 @@ interface LevelOpts<Name extends string> {
   name: Name;
   template?: ResolvedTemplateOpts; // template override, uses default template as base
   color?: (str: string) => string; // color middleware
+  stream?: "stdout" | "stderr"; // output stream, defaults to "stdout"
 }
 
 interface LoggerOpts<Level extends string> {
   levels: Array<Level | LevelOpts<Level>>;
-  defaultLevel: Level; // this could be overriden via env variable?
-  errorLevel: Level; // this could replace the requirement for an "error" level
+  defaultLevel: Level; // this could be overriden via env variable?❓
   template: Template; // Default Template to use for every level without one
   inspectOpt?: InspectOptions; // imported from "util"
 }
@@ -102,7 +102,7 @@ function createLogger<Level extends string>(
 
 interface Logger<Level extends string> {
   logger: LoggerUtils<Level>;
-  log: Record<Lowercase<Level>, LogFn>; // ??
+  log: Record<Lowercase<Level>, LogFn>;
 }
 ```
 
@@ -110,19 +110,26 @@ interface Logger<Level extends string> {
 
 Settings utilites:
 
-- ability to change current log level (or revert to default?)
+- `setLevel` ability to change current log level (or revert to default)
 
 ### Logger.log
 
 Contains log method for each level
 
 ```ts
-type LogFn = (arg: any) => void;
+import type { InspectOptions } from "util";
+
+interface LogFn {
+  (arg: string, opts?: InspectOptions, optsB?: string[]): void;
+  (arg: string, opts?: string[], optsB?: InspectOptions): void;
+  (arg: any, opts?: InspectOptions): void;
+}
 ```
 
-- unsure if this should accept only one value or infinite?
-  - may also allow giving overrides for `node:util.inspect`, tho this will block the infinity args options
-  - support formatting like native `console.log` does?
+- accepts single value with optional overrides for `InspectOptions`
+  - ❓ support formatting like native `console.log` does (see `string[]` above)?
+- check position in levels array and compare against current level
+  - if current level is larger `LogFn` should be a noop
 - All logs start with prefix as per template
   - uses default template as base, replaces values from override as provided
 - if output contains at least one instance of `"\n"` add newline after prefix, space character otherwise
@@ -133,15 +140,10 @@ type LogFn = (arg: any) => void;
 
 ## TODO:
 
-- do I need more settings utils yet?
+- ❓ do I need more settings utils yet?
   - future features will add some, so `Logger.logger` existing is fine
-- env var overrides for settings?
-  - definitely want a way to override `defaultLevel`, probably not `errorLevel` tho
-- how should the `errorLevel` setting be used? Is it even needed?
-  - technically could just declare one internally with the defaultTemplate?
-- should log levels have an output stream option (i.e. stdout, stderr, custom stream)?
-  - what type are streams even
-- how to handle currently set log level?
-  - basic idea is that any level below the current one is ignored silently
-  - i.e. for `["log", "warn", "error"]` with currentLevel `"warn"` any `"log"` level log will be ignored
-- write a README
+- ❓ env var overrides for settings?
+  - definitely want a way to override `defaultLevel`, maybe something else?
+- ❓ maybe an option to set what part of the prefix gets coloured with middleware
+  - either only name or full prefix?
+- write a proper README
