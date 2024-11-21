@@ -38,6 +38,14 @@ aka prevented pre-release feature creep :)
   - Not an issue if the user has "exactOptionalPropertyTypes" set to `true`, but this is not the default
     - may enable this in configs in the lib template?
 
+## Env Variables
+
+Environment Variables can be used to override settings passed to `createLogger`:
+
+| var         | Description                     |
+| :---------- | :------------------------------ |
+| `LOG_LEVEL` | Overrides the default log level |
+
 ## API
 
 ### Formatter system
@@ -86,12 +94,13 @@ interface LevelOpts<Name extends string> {
   name: Name;
   template?: ResolvedTemplateOpts; // template override, uses default template as base
   color?: (str: string) => string; // color middleware
+  colorMode?: "name" | "full"; // whether to color name or entire prefix, default: name
   stream?: "stdout" | "stderr"; // output stream, defaults to "stdout"
 }
 
 interface LoggerOpts<Level extends string> {
   levels: Array<Level | LevelOpts<Level>>;
-  defaultLevel: Level; // this could be overriden via env variable?❓
+  defaultLevel: Level; // this can be overriden via env variable `LOG_LEVEL`
   template: Template; // Default Template to use for every level without one
   inspectOpt?: InspectOptions; // imported from "util"
 }
@@ -110,7 +119,8 @@ interface Logger<Level extends string> {
 
 Settings utilites:
 
-- `setLevel` ability to change current log level (or revert to default)
+- `setLogLevel` ability to change current log level (or revert to default?)
+- `getLogLevel` ability to read current log level (or use getter/setter?)
 
 ### Logger.log
 
@@ -119,15 +129,10 @@ Contains log method for each level
 ```ts
 import type { InspectOptions } from "util";
 
-interface LogFn {
-  (arg: string, opts?: InspectOptions, optsB?: string[]): void;
-  (arg: string, opts?: string[], optsB?: InspectOptions): void;
-  (arg: any, opts?: InspectOptions): void;
-}
+type LogFn = (arg: any, opts?: InspectOptions) => void;
 ```
 
 - accepts single value with optional overrides for `InspectOptions`
-  - ❓ support formatting like native `console.log` does (see `string[]` above)?
 - check position in levels array and compare against current level
   - if current level is larger `LogFn` should be a noop
 - All logs start with prefix as per template
@@ -140,10 +145,4 @@ interface LogFn {
 
 ## TODO:
 
-- ❓ do I need more settings utils yet?
-  - future features will add some, so `Logger.logger` existing is fine
-- ❓ env var overrides for settings?
-  - definitely want a way to override `defaultLevel`, maybe something else?
-- ❓ maybe an option to set what part of the prefix gets coloured with middleware
-  - either only name or full prefix?
 - write a proper README
