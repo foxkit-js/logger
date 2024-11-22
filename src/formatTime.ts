@@ -1,23 +1,45 @@
 import { padNum } from "./padNum";
 
 const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
+const months = {
+  short: [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ],
+  long: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ]
+};
 const ordSuffix = ["st", "nd", "rd"];
 
-export function formatTime(template: string, utc: boolean, time: Date) {
+// TODO: write proper tests
+export function formatTime(
+  template: string,
+  time: Date,
+  utc: boolean,
+  hours: 12 | 24
+) {
   function fmt(str: string): string {
     switch (str.toLowerCase()) {
       case "%year%":
@@ -35,8 +57,11 @@ export function formatTime(template: string, utc: boolean, time: Date) {
         return padNum(fmt("%date%"), 2);
 
       case "%hour%":
-      case "%hours%":
-        return time[utc ? "getUTCHours" : "getHours"]().toString();
+      case "%hours%": {
+        const hour = time[utc ? "getUTCHours" : "getHours"]();
+        if (hours == 24) return hour.toString();
+        return (hour % 12 || 12).toString();
+      }
 
       case "%#hour%":
       case "%#hours%":
@@ -64,11 +89,27 @@ export function formatTime(template: string, utc: boolean, time: Date) {
       case "%#seconds%":
         return padNum(fmt("%sec%"), 2);
 
+      case "%ms%":
+      case "%millisecond%":
+      case "%milliseconds%":
+        return time[
+          utc ? "getUTCMilliseconds" : "getMilliseconds"
+        ]().toString();
+
+      case "%#ms%":
+      case "%#millisecond%":
+      case "%#milliseconds%":
+        return padNum(fmt("%ms%"), 3);
+
       case "%day%":
         return weekdays[time[utc ? "getUTCDay" : "getDay"]()];
 
-      case "%month_str%":
-        return months[time[utc ? "getUTCMonth" : "getMonth"]()];
+      case "%month_short%":
+        return months.short[time[utc ? "getUTCMonth" : "getMonth"]()];
+
+      case "%month_long%":
+      case "%month_full%":
+        return months.long[time[utc ? "getUTCMonth" : "getMonth"]()];
 
       case "%date_ord%": {
         const date = time[utc ? "getUTCDate" : "getDate"]();

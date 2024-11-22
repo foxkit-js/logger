@@ -52,20 +52,21 @@ Environment Variables can be used to override settings passed to `createLogger`:
 
 Replaces variables [word here] by being surrounded by `%` characters such as `%hours%`. Padding may be available for some variables using `#`.
 
-| var              | Description                                          | Padding                         | Aliases                     |
-| :--------------- | :--------------------------------------------------- | :------------------------------ | :-------------------------- |
-| `"%year%"`       | Current year                                         | `%#year%` padded to 4 digits    |
-| `"%month%"`      | Current month as number                              | `%#month%` padded to 2 digits   |
-| `"%date%"`       | Current day of month as number                       | `"%#date%"` paddded to 2 digits |
-| `"%hour%"`       | Current hour                                         | `"%#hour%"` padded to 2 digits  | `hours`                     |
-| `"%min%"`        | Current minute                                       | `"%#min%"` padded to 2 digits   | `mins`, `minute`, `minutes` |
-| `"%sec%"`        | Current second                                       | `"%#sec%"` padded to 2 digits   | `second`, `seconds`         |
-| `"%day%"`        | Current weekday as string such as `"Wed"`            |
-| `"%month_str%"`  | Current month as string such as `"Dec"`              |
-| `"%date_ord%": ` | Current day of the month as string such as `"25th"`  |
-| `"%iso%"`        | Current iso date as string such as `"2024-12-25"`    |                                 | `iso_short`                 |
-| `"%iso_full%"`   | Full ISO string such as `"2024-12-25T18:06:12.889Z"` |                                 | `iso_long`                  |
-| `"%time%"`       | Alias of `"%#hour%:%#min%:%#sec"` \*                 |
+| var               | Description                                          | Padding                         | Aliases                     |
+| :---------------- | :--------------------------------------------------- | :------------------------------ | :-------------------------- |
+| `"%year%"`        | Current year                                         | `%#year%` padded to 4 digits    |
+| `"%month%"`       | Current month as number                              | `%#month%` padded to 2 digits   |
+| `"%date%"`        | Current day of month as number                       | `"%#date%"` paddded to 2 digits |
+| `"%hour%"`        | Current hour                                         | `"%#hour%"` padded to 2 digits  | `hours`                     |
+| `"%min%"`         | Current minute                                       | `"%#min%"` padded to 2 digits   | `mins`, `minute`, `minutes` |
+| `"%sec%"`         | Current second                                       | `"%#sec%"` padded to 2 digits   | `second`, `seconds`         |
+| `"%day%"`         | Current weekday as string such as `"Wed"`            |
+| `"%month_short%"` | Current month as string such as `"Dec"`              |
+| `"%month_long%"`  | Current month as string such as `"December"`         |                                 | `month_full`                |
+| `"%date_ord%": `  | Current day of the month as string such as `"25th"`  |
+| `"%iso%"`         | Current iso date as string such as `"2024-12-25"`    |                                 | `iso_short`                 |
+| `"%iso_full%"`    | Full ISO string such as `"2024-12-25T18:06:12.889Z"` |                                 | `iso_long`                  |
+| `"%time%"`        | Alias of `"%#hour%:%#min%:%#sec"` \*                 |
 
 Ideas for new vars: milliseconds, AMPM
 
