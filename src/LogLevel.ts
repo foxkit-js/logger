@@ -78,8 +78,9 @@ export class LogLevel {
       template.replace(/%#?(?:name|Name|NAME)#?%/g, str =>
         this.#processNameVar(str)
       ),
+      new Date(),
       utc ?? false,
-      new Date()
+      24
     );
   }
 
