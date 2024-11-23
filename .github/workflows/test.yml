@@ -95,5 +95,11 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Set Timezone # setting a non-UTC timezone for local date tests
+        run: sudo timedatectl set-timezone 'Europe/Berlin'
       - name: Run Tests
         run: pnpm test
+      - name: Set different Timezone # retesting date-related tests on other tz
+        run: sudo timedatectl set-timezone 'America/Los_Angeles'
+      - name: Rerun date-related tests
+        run: pnpm tsx tests/formatTime.test.ts

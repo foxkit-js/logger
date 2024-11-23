@@ -33,7 +33,6 @@ const months = {
 };
 const ordSuffix = ["st", "nd", "rd"];
 
-// TODO: write proper tests
 export function formatTime(
   template: string,
   time: Date,
