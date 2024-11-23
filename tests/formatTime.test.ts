@@ -61,7 +61,7 @@ test("UTC vs local time", () => {
 });
 
 test("other variables", () => {
-  const otherDate = new Date(`2024-12-25T00:17:32.123${localTz}`);
+  const otherDate = new Date(`2024-12-25T12:17:32.023${localTz}`);
   assert.is(
     formatTime("%month_short%", sampleDate, false, 24),
     "Nov",
@@ -93,6 +93,22 @@ test("other variables", () => {
     formatTime("%day%", otherDate, false, 24),
     "Wed",
     "test %day% on other time"
+  );
+
+  assert.is(
+    formatTime("%ampm%", sampleDate, false, 12),
+    "am",
+    "test %ampm% with sample time (am)"
+  );
+  assert.is(
+    formatTime("%ampm%", otherDate, false, 12),
+    "pm",
+    "test %ampm% with other time (pm)"
+  );
+  assert.is(
+    formatTime("%AMPM%", otherDate, false, 12),
+    "PM",
+    "test %AMPM% with other time (PM, capitalized)"
   );
 });
 

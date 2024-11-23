@@ -130,6 +130,13 @@ export function formatTime(
       case "%time%":
         return `${fmt("%#hour%")}:${fmt("%#min%")}:${fmt("%#sec%")}`;
 
+      case "%ampm%": {
+        const hour = time[utc ? "getUTCHours" : "getHours"]();
+        const out = hour >= 12 ? "pm" : "am";
+        if (str == "%AMPM%") return out.toUpperCase();
+        return out;
+      }
+
       default:
         return str;
     }
