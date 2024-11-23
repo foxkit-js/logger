@@ -4,12 +4,12 @@ import { formatTime } from "../src/formatTime";
 import { getLocalTimezone } from "./utils/getLocalTimezone";
 
 const localTz = getLocalTimezone();
-const sampleDate = new Date(`2024-11-23T00:17:32.123${localTz}`);
+const sampleDate = new Date(`2024-11-23T00:17:32.023${localTz}`);
 
 console.log(
   `Created sample time with offset ${localTz}:
   Local: ${sampleDate.toLocaleString()}
-  UTC: ${sampleDate.toLocaleString(undefined, { timeZone: "UTC" })}`
+  UTC:   ${sampleDate.toLocaleString(undefined, { timeZone: "UTC" })}\n`
 );
 
 test("basic date variables", () => {
@@ -22,6 +22,19 @@ test("basic date variables", () => {
     formatTime("%time%", sampleDate, false, 24),
     "00:17:32",
     "test current time (%time%)"
+  );
+});
+
+test("padding", () => {
+  assert.is(
+    formatTime("%ms%", sampleDate, false, 24),
+    "23",
+    "test unpadded %ms%"
+  );
+  assert.is(
+    formatTime("%#ms%", sampleDate, false, 24),
+    "023",
+    "test padded %ms%"
   );
 });
 
