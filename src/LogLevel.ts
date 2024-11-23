@@ -8,6 +8,9 @@ interface MessageTemplate {
   utc?: boolean;
 }
 
+/**
+ * @deprecated
+ */
 export interface LogLevelOpts {
   /**
    * Name of the log level
@@ -36,6 +39,9 @@ function toTemplateObjs(msgVal: string | MessageTemplate) {
   return { msg: msgTemplate };
 }
 
+/**
+ * @deprecated
+ */
 export class LogLevel {
   #name: string;
   #templates: ReturnType<typeof toTemplateObjs>;

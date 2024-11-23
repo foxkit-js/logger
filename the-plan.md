@@ -94,7 +94,7 @@ interface LevelOpts<Name extends string> {
   template?: ResolvedTemplateOpts; // template override, uses default template as base
   color?: (str: string) => string; // color middleware
   colorMode?: "name" | "full"; // whether to color name or entire prefix, default: name
-  stream?: "stdout" | "stderr"; // output stream, defaults to "stdout"
+  type?: "log" | "warn" | "error"; // console method to use, default: "log"
 }
 
 interface LoggerOpts<Level extends string> {
