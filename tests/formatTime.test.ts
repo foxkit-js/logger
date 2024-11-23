@@ -8,6 +8,10 @@ import { getLocalTimezone } from "./utils/getLocalTimezone";
 const localTz = getLocalTimezone();
 const sampleDate = new Date(`2024-11-23T00:17:32.123${localTz}`);
 
+console.log(
+  `Created sample time with offset ${localTz}: ${sampleDate.toLocaleString()}`
+);
+
 // TODO: messages on all of these tests below
 
 test("basic date variables", () => {
