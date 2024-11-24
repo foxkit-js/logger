@@ -8,14 +8,14 @@
 - good TS support
 - implements `node:util.inspect` for objects
 - colour support
-  - will colour the `%name%` variables
+  - will colour the `%name%` variables or full prefix
   - `node:util.inspect` already supports colour as config var
 
 ## Future Ideas
 
 aka prevented pre-release feature creep :)
 
-- middleware/hooks (i.e. `onLog(level, callback)`)
+- more middleware/hooks (i.e. `onLog(level, callback)`)
 - file logging
   - likely support the option of using a different template for file logging
   - must disable colour in prefix and `node:util.inspect`!
@@ -33,14 +33,10 @@ aka prevented pre-release feature creep :)
 
 - Any objects passed should either be recreated or frozen to prevent changes
   - opts for `node:util.inspect` should likely just be sealed/frozen?❓
-- need a custom util for merging opts and a default, see: https://ieji.de/@mitsunee/113499661365435282
-  - TL;DR: there's a funny behaviour with spread where `undefined` set as a value replaces "legitimate" values, which TS ignores.
-  - Not an issue if the user has "exactOptionalPropertyTypes" set to `true`, but this is not the default
-    - may enable this in configs in the lib template?
 - Should detect color support (see https://github.com/alexeyraspopov/picocolors/issues/85)
   - `FORCE_COLOR` env cannot be 0
   - `NO_COLOR` cannot be set
-  - `CI` should force enable?
+  - unsure about `CI`
 
 ## Env Variables
 
@@ -49,6 +45,8 @@ Environment Variables can be used to override settings passed to `createLogger`:
 | var         | Description                     |
 | :---------- | :------------------------------ |
 | `LOG_LEVEL` | Overrides the default log level |
+
+TODO: see misc notes about standardized color env vars
 
 ## API
 
@@ -76,31 +74,12 @@ Replaces variables [word here] by being surrounded by `%` characters such as `%h
 
 Note: Some usecases may extend the formatter with additional variables such as `%name%` in Log Level Prefixes.
 
-```ts
-interface TemplateOpts {
-  template: string;
-  utc?: boolean; // whether to use UTC or local tz when logging, default: false
-  hours?: 12 | 24; // hour notation system, default: 24
-}
-
-type Template = TemplateOpts | string;
-type ResolvedTemplateOpts = Required<TemplateOpts>;
-```
-
 ### Logger
 
 - main interface to create a new logger, possibly singletonfactory?❓
 - Definitely want this to be synchronous to better support cjs.
 
 ```ts
-interface LevelOpts<Name extends string> {
-  name: Name;
-  template?: ResolvedTemplateOpts; // template override, uses default template as base
-  color?: (str: string) => string; // color middleware
-  colorMode?: "name" | "full"; // whether to color name or entire prefix, default: name
-  type?: "log" | "warn" | "error"; // console method to use, default: "log"
-}
-
 interface LoggerOpts<Level extends string> {
   levels: Array<Level | LevelOpts<Level>>;
   defaultLevel: Level; // this can be overriden via env variable `LOG_LEVEL`
@@ -136,6 +115,7 @@ type LogFn = (arg: any, opts?: InspectOptions) => void;
 ```
 
 - accepts single value with optional overrides for `InspectOptions`
+  - is using `unknown` for the arg valid?
 - check position in levels array and compare against current level
   - if current level is larger `LogFn` should be a noop
 - All logs start with prefix as per template
@@ -145,6 +125,7 @@ type LogFn = (arg: any, opts?: InspectOptions) => void;
 - other Primitives objects are handled with `node:util.inspect`
   - that also adds color to numbers, bools etc if color is enabled
   - uses settings as per `LoggerOpts`
+- Return value may become `Promise<void>` when implementing file logging
 
 ## TODO:
 
