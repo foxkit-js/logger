@@ -41,7 +41,7 @@ export interface LevelOpts<Name extends string> {
    * Optional override for the template used when logging using this log level.
    * Note that defaults are taken from the default template of the logger!
    */
-  template?: TemplateOpts;
+  template?: TemplateOpts | string;
   /**
    * Color Middleware that can be used to color or transform parts or the full
    * prefix (see also `colorMode`)
