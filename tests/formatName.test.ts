@@ -1,8 +1,16 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import * as col from "picocolors";
-import { formatName } from "../src/formatName";
+import * as picocolors from "picocolors";
+import { colorSupport, formatName } from "../src/formatName";
 import type { ResolvedLevelOpts } from "../src/types";
+
+console.log(
+  `Color Support detected:
+  stdout: ${colorSupport.stdout} (${colorSupport.stdout ? "Using color in tests" : "⚠️ Disabling color in tests"})
+  stderr: ${colorSupport.stderr}`
+);
+
+const col = picocolors.createColors(colorSupport.stdout);
 
 test("transform name variables in template", () => {
   const level: ResolvedLevelOpts<"test"> = {

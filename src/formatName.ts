@@ -1,7 +1,7 @@
 import { padStr } from "./padStr";
 import type { ResolvedLevelOpts } from "./types";
 
-const colorSupport = {
+export const colorSupport = {
   stdout: process.stdout?.hasColors?.() ?? false,
   stderr: process.stderr?.hasColors?.() ?? false
 };
