@@ -33,20 +33,16 @@ aka prevented pre-release feature creep :)
 
 - Any objects passed should either be recreated or frozen to prevent changes
   - opts for `node:util.inspect` should likely just be sealed/frozen?❓
-- Should detect color support (see https://github.com/alexeyraspopov/picocolors/issues/85)
-  - `FORCE_COLOR` env cannot be 0
-  - `NO_COLOR` cannot be set
-  - unsure about `CI`
 
 ## Env Variables
 
 Environment Variables can be used to override settings passed to `createLogger`:
 
-| var         | Description                     |
-| :---------- | :------------------------------ |
-| `LOG_LEVEL` | Overrides the default log level |
-
-TODO: see misc notes about standardized color env vars
+| var           | Description                                    |
+| :------------ | :--------------------------------------------- |
+| `LOG_LEVEL`   | Overrides the default log level                |
+| `NO_COLOR`    | Setting this disables color middleware         |
+| `FORCE_COLOR` | Settings this to `0` disables color middleware |
 
 ## API
 
