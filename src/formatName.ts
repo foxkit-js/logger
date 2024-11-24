@@ -2,8 +2,8 @@ import { padStr } from "./padStr";
 import type { ResolvedLevelOpts } from "./types";
 
 const colorSupport = {
-  stdout: process.stdout?.hasColors() ?? false,
-  stderr: process.stderr?.hasColors() ?? false
+  stdout: process.stdout?.hasColors?.() ?? false,
+  stderr: process.stderr?.hasColors?.() ?? false
 };
 
 function formatNameVar<Name extends string = string>(
