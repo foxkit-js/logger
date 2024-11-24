@@ -37,6 +37,10 @@ aka prevented pre-release feature creep :)
   - TL;DR: there's a funny behaviour with spread where `undefined` set as a value replaces "legitimate" values, which TS ignores.
   - Not an issue if the user has "exactOptionalPropertyTypes" set to `true`, but this is not the default
     - may enable this in configs in the lib template?
+- Should detect color support (see https://github.com/alexeyraspopov/picocolors/issues/85)
+  - `FORCE_COLOR` env cannot be 0
+  - `NO_COLOR` cannot be set
+  - `CI` should force enable?
 
 ## Env Variables
 
