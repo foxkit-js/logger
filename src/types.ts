@@ -1,3 +1,5 @@
+import type { InspectOptions } from "util";
+
 // TEMPLATES
 
 /**
@@ -64,4 +66,33 @@ export interface ResolvedLevelOpts<Name extends string>
   template: ResolvedTemplateOpts;
   colorMode: NonNullable<LevelOpts<Name>["colorMode"]>;
   type: NonNullable<LevelOpts<Name>["type"]>;
+}
+
+// LOGGER
+
+export interface LoggerOpts<Level extends string> {
+  /**
+   * Names or Options for every Log Level in order of severity (least to highest)
+   */
+  levels: Array<Level | LevelOpts<Level>>;
+  /**
+   * Default Log Level to pick if environment variable `LOG_LEVEL` is unset
+   */
+  defaultLevel: Level; // BUG: Can introduce invalid values to generic
+  /**
+   * Default Template to use for Log Levels without overrides
+   */
+  template: TemplateOpts | string;
+  /**
+   * Options passed to `util.inspect` when logging non-string values
+   */
+  inspectOpts?: InspectOptions;
+}
+
+export interface ResolvedLoggerOpts<Level extends string>
+  extends LoggerOpts<Level> {
+  levels: Array<ResolvedLevelOpts<Level>>;
+  defaultLevel: Level;
+  template: ResolvedTemplateOpts;
+  inspectOpts: InspectOptions | undefined;
 }
