@@ -1,5 +1,6 @@
 import { resolveLevelOpts } from "./resolveLevelOpts";
 import { resolveTemplateOpts } from "./resolveTemplateOpts";
+import { toLowercase } from "./toLowercase";
 import type { LoggerOpts, ResolvedLoggerOpts } from "./types";
 
 function isLevel<Level extends string>(
@@ -18,7 +19,7 @@ export function resolveLoggerOpts<Level extends string>(
   const levelSet = new Set<Lowercase<Level>>();
   for (const level of logger.levels) {
     const name = typeof level == "string" ? level : level.name;
-    const nameLc = name.toLowerCase() as Lowercase<Level>;
+    const nameLc = toLowercase(name);
     if (levelSet.has(nameLc)) {
       throw new Error(
         `Could not resolve Logger options, duplicate key '${nameLc}'`

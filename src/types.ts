@@ -96,3 +96,5 @@ export interface ResolvedLoggerOpts<Level extends string>
   template: ResolvedTemplateOpts;
   inspectOpts: InspectOptions | undefined;
 }
+
+export type LogFn = (arg: unknown, opts?: InspectOptions) => void;
