@@ -1,6 +1,6 @@
 {
   "name": "@foxkit/logger",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Highly customizable logger with TypeScript support",
   "keywords": [],
   "author": "Mitsunee",
