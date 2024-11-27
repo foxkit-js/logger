@@ -14,6 +14,7 @@ function formatNameVar<Name extends string = string>(
   let direction: null | "left" | "center" | "right" = null;
   const strInner = str.replace(/%|#/g, "");
   let output: string = level.name;
+  const realLength = output.length;
 
   // determine padding direction
   if (str.startsWith("%#")) direction = "left";
@@ -37,7 +38,9 @@ function formatNameVar<Name extends string = string>(
   }
 
   // return with padding if set
-  return direction ? padStr(output, level.template.padLen, direction) : output;
+  return direction
+    ? padStr(output, { len: level.template.padLen, direction, realLength })
+    : output;
 }
 
 /**

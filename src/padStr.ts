@@ -1,29 +1,50 @@
 type CenterBias = "left" | "right";
 type PadDirection = "left" | "center" | "right";
 
-export function padStr(
-  str: string,
-  len: number,
-  direction: PadDirection,
-  bias?: CenterBias
-) {
-  if (str.length >= len) return str;
-  const remaining = len - str.length;
+interface PadOpts {
+  /**
+   * Target Length
+   */
+  len: number;
+  /**
+   * Direction of padding: `"left"`, `"center"` or `"right"`
+   */
+  direction: PadDirection;
+  /**
+   * Bias for `"center"` direction: `"left"` or `"right"`
+   */
+  bias?: CenterBias;
+  /**
+   * Override for input string length (useful with ansi colors)
+   */
+  realLength?: number;
+}
 
-  let l = 0;
-  let r = 0;
+export function padStrCount(
+  str: string,
+  { len, direction, bias, realLength }: PadOpts
+) {
+  const strLength = realLength ?? str.length;
+  const padding = { l: 0, r: 0 };
+  if (strLength >= len) return padding;
+  const remaining = len - strLength;
 
   switch (direction) {
     case "left":
-      l = remaining;
+      padding.l = remaining;
       break;
     case "right":
-      r = remaining;
+      padding.r = remaining;
       break;
     case "center":
-      l = Math[bias == "right" ? "ceil" : "floor"](remaining / 2);
-      r = remaining - l;
+      padding.l = Math[bias == "right" ? "ceil" : "floor"](remaining / 2);
+      padding.r = remaining - padding.l;
   }
 
+  return padding;
+}
+
+export function padStr(str: string, opts: PadOpts) {
+  const { l, r } = padStrCount(str, opts);
   return " ".repeat(l) + str + " ".repeat(r);
 }
