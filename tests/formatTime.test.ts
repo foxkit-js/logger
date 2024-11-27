@@ -125,4 +125,12 @@ test("other variables", () => {
   );
 });
 
+test("formats multiple variables in one string", () => {
+  assert.is(
+    formatTime("[%iso_short% %time%] log:", sampleDate, false, 24),
+    "[2024-11-23 00:17:32] log:",
+    "test with multiple variables"
+  );
+});
+
 test.run();
