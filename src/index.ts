@@ -1,8 +1,8 @@
 import { inspect } from "util";
-import { resolveLoggerOpts } from "./resolveLoggerOpts";
 import type { LogFn, LoggerOpts, ResolvedLevelOpts } from "./types";
-import { formatName } from "./formatName";
+import { formatName, colorSupport } from "./formatName";
 import { formatTime } from "./formatTime";
+import { resolveLoggerOpts } from "./resolveLoggerOpts";
 
 export function createLogger<Level extends string>(opts: LoggerOpts<Level>) {
   const loggerOpts = resolveLoggerOpts(opts);
@@ -35,8 +35,14 @@ export function createLogger<Level extends string>(opts: LoggerOpts<Level>) {
         // quit early if level is too low
         if (levelIdx < currentLevelIdx) return;
 
-        // resolve arg
+        // merge inspectOpts with logger defaults
         const inspectOpts = Object.assign({}, loggerOpts.inspectOpts, opts);
+        if (!colorSupport[levelOpts.type == "log" ? "stdout" : "stderr"]) {
+          // if output stream does not support color, force disable color opt
+          inspectOpts.colors = false;
+        }
+
+        // resolve arg
         const argStr = typeof arg == "string" ? arg : inspect(arg, inspectOpts);
 
         // resolve prefix
