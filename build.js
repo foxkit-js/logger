@@ -141,12 +141,14 @@ function buildCJS() {
 async function build() {
   // Clean dist directory
   await handleClean();
+  const distDocs = path.join(config.outdir, "docs");
 
   console.log("Starting build");
   const res = await Promise.allSettled([
     buildESM(),
     buildCJS(),
     copyFiles(["README.md", "LICENSE"]),
+    fs.cp("docs", distDocs, { recursive: true }),
     handlePkgJson()
   ]);
 
