@@ -2,7 +2,10 @@
   "name": "@foxkit/logger",
   "version": "0.1.0",
   "description": "Highly customizable logger with TypeScript support",
-  "keywords": [],
+  "keywords": [
+    "logger",
+    "logs"
+  ],
   "author": "Mitsunee",
   "repository": {
     "type": "git",
