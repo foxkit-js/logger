@@ -29,6 +29,8 @@ aka prevented pre-release feature creep :)
   - can run async main function of a script and catch any fatal errors
   - uses configurable level (such as `"error"` or `"fatal"`) to log caught errors
   - returns Promise, so `then(() => log.debug("Completed"))` could be chained for example :)
+- `Logger` method to force disable/enable color
+  - `null` instead of bool returns to default value
 
 ## Misc notes
 
