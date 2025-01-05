@@ -22,6 +22,7 @@ aka prevented pre-release feature creep :)
   - rolling log file
     - customizable file name? same template system (sans `%name%` var)?
   - can extend `TemplateOpts` like this: https://tsplay.dev/NV81nW
+  - `logger.printRaw()` and `printRawError()` to print a message without prefix in both cli and file
 - table printing util (may make separate package for this)
   - available formats: ascii, ascii (simple, i.e. `+` for corners), markdown, possibly html
 - wrapper for main functions
