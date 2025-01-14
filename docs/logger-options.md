@@ -25,6 +25,7 @@ export { log, logger };
 ## Available Options
 
 - `inspectOpts`: Options passed to `node:util.inspect` when logging non-string values
+  - should Color Middleware be disabled, `inspectOpts.colors` will be forced to `false`. See [Configuration via Enviroment Variables](./env-variables.md#force_color) for more information.
 
 ## Logging with `log`
 
