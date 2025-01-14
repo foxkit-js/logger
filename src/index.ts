@@ -1,12 +1,16 @@
 import { inspect } from "util";
 import type { LogFn, LoggerOpts, ResolvedLevelOpts } from "./types";
-import { formatName, colorSupport } from "./formatName";
+import { formatName } from "./formatName";
 import { formatTime } from "./formatTime";
 import { resolveLoggerOpts } from "./resolveLoggerOpts";
+import { createColorToggles } from "./color";
+
+export { getColorSupport } from "./color";
 
 export function createLogger<Level extends string>(opts: LoggerOpts<Level>) {
   const loggerOpts = resolveLoggerOpts(opts);
   const levels = loggerOpts.levels.map(level => level.name);
+  const colorToggles = createColorToggles();
   let currentLevel = loggerOpts.defaultLevel;
   let currentLevelIdx = levels.indexOf(currentLevel);
 
@@ -25,7 +29,22 @@ export function createLogger<Level extends string>(opts: LoggerOpts<Level>) {
     return currentLevel;
   }
 
-  const utils = { setLogLevel, getLogLevel };
+  /**
+   * Checks whether color is enabled for an output stream
+   * @param stream Either `"log"` (stdout) or `"error"` (stderr). Default: `"log"`
+   * @returns boolean, `true` if enabled
+   */
+  function getColorEnabled(stream?: "log" | "error") {
+    const toggle = colorToggles.toggles[stream || "log"];
+    return toggle.isEnabled;
+  }
+
+  const utils = {
+    setLogLevel,
+    getLogLevel,
+    getColorEnabled,
+    setColor: colorToggles.toggleColor
+  };
 
   // Logger.log log functions
   const log = Object.fromEntries(
@@ -34,10 +53,13 @@ export function createLogger<Level extends string>(opts: LoggerOpts<Level>) {
         const levelOpts = levelsMap[level];
         // quit early if level is too low
         if (levelIdx < currentLevelIdx) return;
+        const colorEnabled =
+          colorToggles.toggles[levelOpts.type == "log" ? "log" : "error"]
+            .isEnabled;
 
         // merge inspectOpts with logger defaults
         const inspectOpts = Object.assign({}, loggerOpts.inspectOpts, opts);
-        if (!colorSupport[levelOpts.type == "log" ? "stdout" : "stderr"]) {
+        if (!colorEnabled) {
           // if output stream does not support color, force disable color opt
           inspectOpts.colors = false;
         }
@@ -47,7 +69,7 @@ export function createLogger<Level extends string>(opts: LoggerOpts<Level>) {
 
         // resolve prefix
         const prefix = formatTime(
-          formatName(levelOpts),
+          formatName(levelOpts, colorEnabled),
           new Date(),
           levelOpts.template.utc,
           levelOpts.template.hours

@@ -1,16 +1,8 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import * as picocolors from "picocolors";
-import { colorSupport, formatName } from "../src/formatName";
+import { formatName } from "../src/formatName";
 import type { ResolvedLevelOpts } from "../src/types";
-
-console.log(
-  `Color Support detected:
-  stdout: ${colorSupport.stdout} (${colorSupport.stdout ? "Using color in tests" : "⚠️ Disabling color in tests"})
-  stderr: ${colorSupport.stderr}`
-);
-
-const col = picocolors.createColors(colorSupport.stdout);
+import { col, colorSupport } from "./utils/colors";
 
 test("transform name variables in template", () => {
   const level: ResolvedLevelOpts<"test"> = {
@@ -19,7 +11,7 @@ test("transform name variables in template", () => {
     colorMode: "name",
     type: "log"
   };
-  const prefix = formatName(level);
+  const prefix = formatName(level, false);
   assert.is(prefix, "test -", "transforms simple log level prefix");
 });
 
@@ -30,7 +22,7 @@ test("transforms to uppercase with %NAME%", () => {
     colorMode: "name",
     type: "log"
   };
-  const prefix = formatName(level);
+  const prefix = formatName(level, false);
   assert.is(prefix, "TEST -", "transforms name to uppercase with %NAME%");
 });
 
@@ -42,7 +34,7 @@ test("applies name colouring", () => {
     colorMode: "name",
     type: "log"
   };
-  const prefix = formatName(level);
+  const prefix = formatName(level, colorSupport.stdout);
   assert.is(
     prefix,
     `${col.gray("test")} -`,
@@ -58,7 +50,7 @@ test("applies full colouring", () => {
     colorMode: "full",
     type: "log"
   };
-  const prefix = formatName(level);
+  const prefix = formatName(level, colorSupport.stdout);
   assert.is(
     prefix,
     col.gray("test -"),

@@ -1,15 +1,10 @@
 import { padStr } from "./padStr";
 import type { ResolvedLevelOpts } from "./types";
 
-export const colorSupport = {
-  stdout: process.stdout?.hasColors?.() ?? false,
-  stderr: process.stderr?.hasColors?.() ?? false
-};
-
 function formatNameVar<Name extends string = string>(
   str: string,
   level: ResolvedLevelOpts<Name>,
-  supportsColor: boolean
+  colorEnabled: boolean
 ): string {
   let direction: null | "left" | "center" | "right" = null;
   const strInner = str.replace(/%|#/g, "");
@@ -33,7 +28,7 @@ function formatNameVar<Name extends string = string>(
   }
 
   // use color middleware if set and mode is "name"
-  if (supportsColor && level.color && level.colorMode == "name") {
+  if (colorEnabled && level.color && level.colorMode == "name") {
     output = level.color(output);
   }
 
@@ -51,15 +46,15 @@ function formatNameVar<Name extends string = string>(
  * @returns Prefix template
  */
 export function formatName<Name extends string = string>(
-  level: ResolvedLevelOpts<Name>
+  level: ResolvedLevelOpts<Name>,
+  colorEnabled: boolean
 ) {
-  const supportsColor = colorSupport[level.type == "log" ? "stdout" : "stderr"];
   let prefix = level.template.template.replace(/%#?name#?%/gi, str =>
-    formatNameVar(str, level, supportsColor)
+    formatNameVar(str, level, colorEnabled)
   );
 
   // use color middleware if set and mode is "full"
-  if (supportsColor && level.color && level.colorMode == "full") {
+  if (colorEnabled && level.color && level.colorMode == "full") {
     prefix = level.color(prefix);
   }
 
