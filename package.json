@@ -38,17 +38,12 @@
     "*.d.ts",
     "index.*"
   ],
-  "clean-publish": {
-    "packageManager": "pnpm",
-    "withoutPublish": true,
-    "tempDir": "dist",
-    "fields": [
+  "publishConfig": {
+    "removeFields": [
       "scripts",
       "nano-staged",
       "simple-git-hooks"
-    ]
-  },
-  "publishConfig": {
+    ],
     "publishConfig": {
       "access": "public"
     },

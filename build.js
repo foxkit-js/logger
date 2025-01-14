@@ -63,14 +63,19 @@ async function handlePkgJson() {
   }
 
   console.log("Processing package.json");
-  const { publishConfig, "clean-publish": cleanPublish, ...pkgRest } = pkg;
-  const pkgProcessed = Object.assign({}, pkgRest, publishConfig);
-
-  // handle removing fields
-  const removeFields = ["devDependencies", ...cleanPublish.fields];
-  for (const field of removeFields) {
-    delete pkgProcessed[field];
-  }
+  const { removeFields, ...publishConfig } = pkg.publishConfig || {};
+  const removedFields = new Set(
+    ["devDependencies", "publishConfig"].concat(
+      Array.isArray(removeFields) ? removeFields : []
+    )
+  );
+  const pkgProcessed = Object.assign(
+    {},
+    Object.fromEntries(
+      Object.entries(pkg).filter(([key]) => !removedFields.has(key))
+    ),
+    publishConfig || {}
+  );
 
   return fs.writeFile(
     path.join(config.outdir, "package.json"),
@@ -92,7 +97,7 @@ async function copyFiles(files) {
       const [fileIn, fileOut] = Array.isArray(file) ? file : [file, file];
       const outPath = path.join(config.outdir, fileOut);
       console.log(`Copying ${fileIn} to ${outPath}`);
-      return fs.cp(fileIn, outPath, { force: true });
+      return fs.cp(fileIn, outPath, { force: true, recursive: true });
     })
   );
 
@@ -141,14 +146,12 @@ function buildCJS() {
 async function build() {
   // Clean dist directory
   await handleClean();
-  const distDocs = path.join(config.outdir, "docs");
 
   console.log("Starting build");
   const res = await Promise.allSettled([
     buildESM(),
     buildCJS(),
-    copyFiles(["README.md", "LICENSE"]),
-    fs.cp("docs", distDocs, { recursive: true }),
+    copyFiles(["README.md", "LICENSE", "docs"]),
     handlePkgJson()
   ]);
 
